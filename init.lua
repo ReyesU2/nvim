@@ -102,7 +102,7 @@ vim.g.have_nerd_font = false
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -201,6 +201,12 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 -- Keybinds close and save files
 -- vim.keymap.set('n', '<leader>e', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 vim.keymap.set('n', '<leader>q', '<cmd>q<cr>', { desc = 'Close file' })
+
+
+ -- Buffer navigation keymaps
+ vim.keymap.set('n', '<leader>p', '<cmd>bprevious<cr>', { desc = 'Previous buffer' })
+ vim.keymap.set('n', '<leader>n', '<cmd>bnext<cr>', { desc = 'Next buffer' })
+vim.keymap.set('n', '<leader>d', '<cmd>bdelete<cr>', { desc = 'Delete buffer' })
 
 vim.keymap.set('n', '<leader>w', '<cmd>w<cr>', { desc = 'Save file' })
 vim.keymap.set('n', '<leader>Q', '<cmd>q!<cr>', { desc = 'Close file without saving' })
@@ -396,3 +402,86 @@ if ok then
   end, { silent = true, desc = "LuaSnip jump back" })
 end
 -- === end LuaSnip console snippets ===
+
+
+-- [[ Configure Telescope ]]
+
+require('telescope').setup {
+  defaults = {
+    -- file_ignore_patterns = {
+    --   "node_modules/",
+    --   "%.git/",
+    --   "%.DS_Store",
+    --   "package-lock.json",
+    --   ".git/",  -- Matches .git/ at the start of the path
+    --   "/.git/", -- Matches .git/ anywhere else in the path
+    --   "^.cursor/",       -- Hides the entire .git directory
+    --   "%.cursor/",    -- Hides the entire .cursor directory
+    --   "dist/",        -- Hides the dist directory
+    --   "build/",       -- Hides the build directory
+    -- },
+
+          file_ignore_patterns = {
+        -- Files
+        "%.a",
+        "%.class",
+        "%.mkv",
+        "%.mp4",
+        "%.o",
+        "%.out",
+        "%.pdf",
+        "%.zip",
+        "%.sample", 
+        -- Directories
+        ".cache",
+        "^.git/",
+        -- "%.git/",
+        "%.git/*",
+        ".git/*",
+        ".github/",
+        ".node_modules/",
+        ".node_modules/*",
+        "%.node_modules/*",
+        "^.node_modules/",
+      },
+
+
+    
+    -- Default settings for all pickers
+    layout_strategy = "horizontal",
+    layout_config = {
+      horizontal = {
+        prompt_position = "top",
+        preview_width = 0.5,
+      },
+    },
+    sorting_strategy = "ascending",
+    mappings = {
+      i = {
+        ["<C-j>"] = "move_selection_next",
+        ["<C-k>"] = "move_selection_previous",
+        ["<C-q>"] = "send_selected_to_qflist",
+      },
+    },
+  },
+  extensions = {
+    -- Extensions can be loaded here
+  },
+}
+
+
+local builtin = require('telescope.builtin')
+-- find_files find_command=rg,--ignore,--hidden,--files prompt_prefix=🔍
+
+vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
+-- vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+-- vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
+-- vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+
+ 
+-- Keymap for opening the built-in netrw file explorer
+vim.api.nvim_set_keymap('n', '<Leader>e', '<cmd>Ex<CR>', { 
+    noremap = true, 
+    silent = true, 
+    desc = 'Open netrw file explorer' 
+})
