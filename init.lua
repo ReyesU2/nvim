@@ -10,7 +10,10 @@
 ========         ||   KICKSTART.NVIM   ||   |-----|          ========
 ========         ||                    ||   | === |          ========
 ========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
+========         ||:Tutor    reyes@reyes-B850M-X-WiFi-R2-0:~/.config/nvim$ git push origin
+remote: Permission to ReyesU2/nvim.git denied to AlexitoReyes54.
+fatal: unable to access 'https://github.com/ReyesU2/nvim.git/': The requested URL returned error: 403
+reyes@reyes-B850M-X-WiFi-R2-0:~/.config/nvim$          ||   |:::::|          ========
 ========         |'-..................-'|   |____o|          ========
 ========         `"")----------------(""`   ___________      ========
 ========        /::::::::::|  |::::::::::\  \ no mouse \     ========
@@ -484,4 +487,47 @@ vim.api.nvim_set_keymap('n', '<Leader>e', '<cmd>Ex<CR>', {
     noremap = true, 
     silent = true, 
     desc = 'Open netrw file explorer' 
+
 })
+
+
+
+-- custon todo utility hacking my way around, en bacaneria 
+
+-- Insert a new todo line and enter insert mode at line start
+function Insert()
+  -- insert the todo line below
+  vim.api.nvim_put({ "- [ ] " }, "l", true, true)
+
+  -- move cursor to beginning of the line
+  vim.cmd("normal! 0")
+
+  -- enter insert mode
+  vim.cmd("startinsert")
+end
+
+-- Toggle checkbox on current line
+function Toggle()
+  local line = vim.api.nvim_get_current_line()
+
+  if line:match("%[ %]") then
+    line = line:gsub("%[ %]", "[x]", 1)
+  elseif line:match("%[x%]") then
+    line = line:gsub("%[x%]", "[ ]", 1)
+  else
+    return
+  end
+
+  vim.api.nvim_set_current_line(line)
+end
+
+
+-- vim.api.nvim_set_keymap("n", "TodoAdd", Insert, {})
+-- vim.api.nvim_set_keymap("n", "TodoToggle", Toggle, {})
+
+vim.keymap.set("n", "<leader>tt", Insert, { desc = "Add todo" })
+vim.keymap.set("n", "<leader>td", Toggle, { desc = "Toggle todo" })
+
+
+
+
