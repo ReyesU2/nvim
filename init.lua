@@ -17,7 +17,18 @@ reyes@reyes-B850M-X-WiFi-R2-0:~/.config/nvim$          ||   |:::::|          ===
 ========         |'-..................-'|   |____o|          ========
 ========         `"")----------------(""`   ___________      ========
 ========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
+========       /:::========|  |==hjkl==:::\  \ require
+  local line = vim.api.nvim_get_current_line()
+
+  if line:match("%[ %]") then
+    line = line:gsub("%[ %]", "[x]", 1)
+  elseif line:match("%[x%]") then
+    line = line:gsub("%[x%]", "[ ]", 1)
+  else
+    return
+  end
+
+d \    ========
 ========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
 ========                                                     ========
 =====================================================================
@@ -491,35 +502,47 @@ vim.api.nvim_set_keymap('n', '<Leader>e', '<cmd>Ex<CR>', {
 })
 
 
-
--- custon todo utility hacking my way around, en bacaneria 
+-- custon todo utility hacking my way around, en bacaneria
+function Is_txt()
+	return vim.bo.filetype == "text"
+end
 
 -- Insert a new todo line and enter insert mode at line start
 function Insert()
-  -- insert the todo line below
-  vim.api.nvim_put({ "- [ ] " }, "l", true, true)
+	if not Is_txt() then
+		return
+	end
+	-- insert the todo line below
+	vim.api.nvim_put({ "- [ ] " }, "l", true, true)
 
-  -- move cursor to beginning of the line
-  vim.cmd("normal! 0")
+	-- move cursor to beginning of the line
+	vim.cmd("normal! 0")
 
-  -- enter insert mode
-  vim.cmd("startinsert")
+	-- enter insert mode
+	vim.cmd("startinsert")
 end
 
 -- Toggle checkbox on current line
 function Toggle()
-  local line = vim.api.nvim_get_current_line()
+	if not Is_txt() then
+		return
+	end
 
-  if line:match("%[ %]") then
-    line = line:gsub("%[ %]", "[x]", 1)
-  elseif line:match("%[x%]") then
-    line = line:gsub("%[x%]", "[ ]", 1)
-  else
-    return
-  end
+	local line = vim.api.nvim_get_current_line()
 
-  vim.api.nvim_set_current_line(line)
+	if line:match("%[ %]") then
+		line = line:gsub("%[ %]", "[x]", 1)
+	elseif line:match("%[x%]") then
+		line = line:gsub("%[x%]", "[ ]", 1)
+	else
+		return
+	end
+
+	vim.api.nvim_set_current_line(line)
 end
+
+
+
 
 
 -- vim.api.nvim_set_keymap("n", "TodoAdd", Insert, {})
@@ -527,6 +550,7 @@ end
 
 vim.keymap.set("n", "<leader>tt", Insert, { desc = "Add todo" })
 vim.keymap.set("n", "<leader>td", Toggle, { desc = "Toggle todo" })
+
 
 
 
